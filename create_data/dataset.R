@@ -22,6 +22,11 @@ st_crs(munic24)
 munic24_vect = vect(munic24)
 
 ##Snowdepth - Geosphere 1984-2010; 2023-2024
+
+#Räumliche Auflösung: 1 km
+#Bounding Box: 46.2 - 49.2 °N, 9.4 - 17.4 °E
+#Projektion: ETRS89-AUT [2002] / Austria Lambert (EPSG: 3416)
+
 snow84 = rast("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/SNOWGRID-CL_snow_depth_1984.nc")
 snow85 = rast("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/SNOWGRID-CL_snow_depth_1985.nc")
 snow86 = rast("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/SNOWGRID-CL_snow_depth_1986.nc")
@@ -58,18 +63,19 @@ snow_list = list(snow84, snow85, snow86, snow87, snow88, snow89,
                  snow00, snow01, snow02, snow03, snow04, snow05, snow06, snow07, snow08, snow09, 
                  snow10, 
                  snow23, snow24)
-snow_list = lapply(snow_list, function(x) 
-  {crs(x) = "EPSG:3416"
-  return(x)
-})
-crs(snow_list[[1]], describe = TRUE)$code  
 
-##Correcting the extent
-correct_ext = ext(munic24_vect)
-snow_list = lapply(snow_list, function(x) {
-  ext(x) = correct_ext
+#Correcting extent of snow raster
+snow24
+correct_ext <- ext(112518.2, 696518.2, 275472, 604472)
+
+snow_list <- lapply(snow_list, function(x) {
+  ext(x) <- correct_ext
+  crs(x) <- "EPSG:3416"
   return(x)
 })
+
+ext(snow_list[[29]])
+ext(munic24_vect)
 
 
 ##Historical Mean in Snowdepth: 1984-2010
@@ -163,6 +169,14 @@ snow_sf = terra::extract(snow_all, munic24_vect, fun = mean, na.rm = TRUE, bind 
   st_as_sf()
 
 sum(is.nan(snow_sf$anomaly))
+
+
+#Questions
+#Matching the SpatRaster with the Vector, so they match? 
+#Controls: at province level, but analysis at municipality level, is that a problem? 
+
+
+
 #===============================================================================
 #Non-Spatial Work
 #===============================================================================
@@ -173,13 +187,14 @@ nwahl24 = read_excel("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/e
 
 ##Controls 
 
+#Statistik Austria
+labmarkstats <- read.csv2("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/OGDEXT_AEST_GEMTAB_1.csv")
+
 #Tourism Intensity/Overnight Stays
-
-overnightprov = lapply(2:9, function(i) read_ods("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/TourismusWinter2024UnterkunftEndg.ods", sheet = i))
-list_ods_sheets("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/TourismusWinter2024UnterkunftEndg.ods")
-
-
-
+library(readODS)
+overnights <- read_ods("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/TourismusintensitaetNachBundeslaendern1995-2025.ods")
+head(overnights)
+names(overnights)
 
 
 
