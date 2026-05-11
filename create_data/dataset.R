@@ -4,6 +4,9 @@ library(readxl)
 library(sf)
 library(spData)
 library(tidyverse)
+library(dplyr)
+library(elevatr)
+
 
 
 #===============================================================================
@@ -13,13 +16,6 @@ library(tidyverse)
 ##Austrian Municipalities 
 munic24 = st_read("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/STATISTIK_AUSTRIA_GEM_20240101/STATISTIK_AUSTRIA_GEM_20240101.shp")
 st_crs(munic24)
-
-#Assigning CRS: EPSG: 3416
-munic24 = st_transform (munic24, "EPSG:3416")
-st_crs(munic24)
-
-#Converting munic24 into SpatVector
-munic24_vect = vect(munic24)
 
 ##Snowdepth - Geosphere 1984-2010; 2023-2024
 
@@ -63,117 +59,110 @@ snow_list = list(snow84, snow85, snow86, snow87, snow88, snow89,
                  snow00, snow01, snow02, snow03, snow04, snow05, snow06, snow07, snow08, snow09, 
                  snow10, 
                  snow23, snow24)
+snow_list = lapply(snow_list, function(x)
+  {crs(x) = "EPSG:3416"; x})
+munic24_proj = st_transform(munic24, "EPSG: 3416")
 
-#Correcting extent of snow raster
-snow24
-correct_ext <- ext(112518.2, 696518.2, 275472, 604472)
+#Attaching Altitude to Municipalities: 
 
-snow_list <- lapply(snow_list, function(x) {
-  ext(x) <- correct_ext
-  crs(x) <- "EPSG:3416"
-  return(x)
-})
-
-ext(snow_list[[29]])
-ext(munic24_vect)
+# Get altitude for each municipality
+altitude = get_elev_raster(munic24, z = 7, clip = "locations")
+# Extract mean altitude per municipality
+munic24$altitude <- terra::extract(rast(altitude), vect(munic24), fun = mean, na.rm = TRUE, ID = FALSE)[,1]
 
 
-##Historical Mean in Snowdepth: 1984-2010
+#plot(snow24[[1]])
+#plot(munic24[1], add = TRUE)
+#plot(munic24)
 
-#Leap-Years: 366 days
-sapply(snow_list[1:27], nlyr)
-#1984 
-#1988 
-#1992 
-#1996 
-#2000 
-#2004
-#2008 
+## Winter Seasons --------------------------------------------------------------
+  #Historical Winter-Seasons
+  #Winter 84/85:  Nov-Dec snow84 + Jan-Apr snow85
+  #Winter 85/86:  Nov-Dec snow85 + Jan-Apr snow86
+  #...
+  #Winter 09/10:  Nov-Dec snow09 + Jan-Apr snow10
 
-#Historical Winter-Seasons
-#Winter 84/85:  Nov-Dec snow84 + Jan-Apr snow85
-#Winter 85/86:  Nov-Dec snow85 + Jan-Apr snow86
-...
-#Winter 09/10:  Nov-Dec snow09 + Jan-Apr snow10
-
-
-#Extract Nov-Dec from 84-09
+#Identifying leap years
 is_leap = sapply(snow_list[1:27], nlyr) == 366
-extract_nov_dec = function(rast_obj, is_leap) { #function to define the leap years, that shifts the day where november starts!
-  if (is_leap == TRUE) {
-    layers <- 306:366
-  } else {
-    layers <- 305:365
-  }
-  return(rast_obj[[layers]])
-}
-nov_dec_hist = mapply(extract_nov_dec, snow_list[1:26], is_leap[1:26], SIMPLIFY = FALSE)
 
+#Extracting Nov-Dec from years 84-09
+extract_nov_dec = function(rast_obj, is_leap)
+{layers  = if (is_leap == TRUE) 306:366 else 305:365
+return(rast_obj[[layers]])}
 
-#Extract Jan-April from 85-10
-extract_jan_apr <- function(rast_obj, is_leap) {
-  if (is_leap == TRUE) {
-    layers <- 1:121
-  } else {
-    layers <- 1:120
-  }
-  return(rast_obj[[layers]])
-}
-jan_apr_hist = mapply(extract_jan_apr, snow_list[2:27], is_leap[2:27], SIMPLIFY = FALSE)
+#Extracting Jan-Apr
+extract_jan_apr = function(rast_obj, is_leap)
+  {layers = if (is_leap == TRUE) 1:121 else 1:120
+  return(rast_obj[[layers]])}
 
+nov_dec_hist = mapply(extract_nov_dec, snow_list[1:26], is_leap [1:26], SIMPLIFY = FALSE)
+jan_apr_hist = mapply(extract_jan_apr, snow_list[2:27], is_leap [2:27], SIMPLIFY = FALSE)
 
-#Combining Nov-Dec + Jan-April for each winter season 84/85 - 09/10
-winters_hist = mapply(function(nd, ja) { #this gives me 26 winter seasons, each containing daily layers from Nov-Apr
-  c(nd, ja)
-}, nov_dec_hist, jan_apr_hist, SIMPLIFY = FALSE)
+#Combining this into 26 historical winterseasons from 1984/85 through to 2009/10
+winters_hist = mapply(function(nd, ja) 
+  {c(nd, ja)}, nov_dec_hist, jan_apr_hist, SIMPLIFY = FALSE)
 
-#Historical Mean in Snow Depth per Winter Season: 84/85 - 09/10 (26 winter seasons)
-winter_hist_means = lapply(winters_hist, function(x) {
-  mean(x, na.rm = TRUE)
-})
-
-
-#Stack of all historical winter seasons
-winter_hist_means_stack = rast(winter_hist_means)
-
-
-#Mean of snowdepth across all 26 historical winter seasons 1984/85 - 2009/19
-snow_hist_mean  = mean(winter_hist_means_stack, na.rm = TRUE)
-
-
-##Mean snowdepth winter 23/24
-nlyr(snow_list[[28]])
-nlyr(snow_list[[29]]) #24 = leap year
-
-#Extract Nov-Dec 23
+#Winter 23/24
+is_leap = sapply(snow_list[28:29], nlyr) == 366
 nov_dec_23 = snow_list[[28]][[305:365]]
-
-#Extract Jan-Apr 24 - Leap Year
-jan_apr_24 = snow_list[[29]][[1:121]]
-
-#Combining into Winter season 23/24
+jan_apr_24 = snow_list[[29]][[1:121]] #leap year
 winter_2324 = c(nov_dec_23, jan_apr_24)
+#-------------------------------------------------------------------------------
 
-#Mean snowdepth winter 23/24
+
+## MEAN Snow-Depth per winter season -------------------------------------------------------------------------
+
+#Mean snow-depth; historical 
+snow_hist_mean = lapply(winters_hist, function(x) mean (x, na.rm = TRUE)) %>% 
+  rast() %>% 
+  mean(na.rm = TRUE)
+
+#Mean snow-depth; for winter 23/24
 snow_2324_mean = mean(winter_2324, na.rm = TRUE)
 
-##Snow Anomaly: Historical Mean in Snow - Snow 24/24
-snow_anomaly = snow_2324_mean - snow_hist_mean #positive values: more snow than historical average, #negative: less snow than average
+## MAX snow-depth in winter season-----------------------------------------------
 
-## All Snow Rasters stacked together
-snow_all = c(snow_hist_mean, snow_2324_mean, snow_anomaly)
-names(snow_all) = c("hist_mean", "2324_mean", "anomaly")
+#Max snow depth on average in historical winter seasons
+snow_hist_max_mean = lapply(winters_hist, function(x) max(x, na.rm = TRUE)) %>%  #to get the average maximum value of snowdepth in the historical winters, check if that makes sense????
+  rast() %>% 
+  median(na.rm = TRUE)
 
-##Extracting the SpatRasters (snow_all) + SpatVector(munic24_vect)
-snow_sf = terra::extract(snow_all, munic24_vect, fun = mean, na.rm = TRUE, bind = TRUE, touches = TRUE) |>
-  st_as_sf()
+#Max snow-depth for winter 23/24
+snow_2324_max = max(winter_2324, na.rm = TRUE)
 
-sum(is.nan(snow_sf$anomaly))
+## Stacking all of the above rasters--------------------------------------------
+snow = c(snow_hist_mean, snow_2324_mean, 
+             snow_hist_max_mean, snow_2324_max)
+
+names(snow) = c("hist_mean", "mean_2324", 
+                "hist_max", "max_2324")
+
+
+## Extracting this per municipality --------------------------------------------
+snow_sf_mean = terra::extract(snow [[c("hist_mean", "mean_2324")]], vect(munic24_proj), fun = "mean", na.rm = TRUE, ID = FALSE, bind = TRUE, touches = TRUE) |> st_as_sf() 
+snow_sf_max = terra::extract(snow[[c("hist_max", "max_2324")]], vect(munic24_proj), fun = "max", na.rm = TRUE, ID = FALSE, bind = TRUE, touches = TRUE) |> st_as_sf()                             
+
+
+## ANOMALIES -------------------------------------------------------------------
+snow_sf_mean$anomaly = snow_sf_mean$mean_2324 - snow_sf_mean$hist_mean
+snow_sf_max$anomaly = snow_sf_max$max_2324 - snow_sf_max$hist_max
+
+
+## DF --------------------------------------------------------------------------
+df_mean = st_drop_geometry(snow_sf_mean)
+df_max = st_drop_geometry(snow_sf_max)
+
+
 
 
 #Questions
 #Matching the SpatRaster with the Vector, so they match? 
 #Controls: at province level, but analysis at municipality level, is that a problem? 
+
+#you can also use the one maximum point per municipality or the top 10
+#you can also do fixed effects - factor variable per region and then that controls for everything that varies within 
+#you can also do just one month
+#you can look for the maximum value in the winter season
 
 
 
@@ -183,18 +172,89 @@ sum(is.nan(snow_sf$anomaly))
 
 #Vote Shares per municipality - Statistik Austria
 nwahl24 = read_excel("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/endgueltiges_Ergebnis_Beschluss_Bundeswahlbehoerde_16102024.xlsx")
+nwahl24 = nwahl24 %>% 
+  select(GKZ, Gebietsname, Wahlberechtigte, Abgegebene, 
+         FPÖ, "%...12", GRÜNE, "%...14") %>% 
+  rename(
+    muni_id = GKZ, 
+    name = Gebietsname, 
+    eligible_voters = Wahlberechtigte, 
+    votes_cast = Abgegebene, 
+    fpö_votes = FPÖ, 
+    fpö_share = "%...12", 
+    greens_votes = GRÜNE, 
+    greens_share = "%...14"
+  ) %>% 
+  mutate(turnout = (votes_cast/eligible_voters)*100)
 
 
-##Controls 
 
-#Statistik Austria
-labmarkstats <- read.csv2("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/OGDEXT_AEST_GEMTAB_1.csv")
+nwahl24 <- nwahl24 %>%
+  select(GKZ, Gebietsname, Wahlberechtigte, Abgegebene, 
+         FPÖ, "%...12", GRÜNE, "%...14") %>%
+  rename(
+    mun_id          = GKZ,
+    mun_name        = Gebietsname,
+    eligible_voters = Wahlberechtigte,
+    votes_cast      = Abgegebene,
+    fpoe_votes      = FPÖ,
+    fpoe_share      = "%...12",
+    gruene_votes    = GRÜNE,
+    gruene_share    = "%...14"
+  ) %>%
+  mutate(turnout = (votes_cast / eligible_voters) * 100)
+
+
+
+
+#Statistik Austria - Abgestimmten Erwerbsstatistik/Gemeinde
+ewstatistik = read.csv2("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/OGDEXT_AEST_GEMTAB_1.csv")
+
+#Controls
+controls = ewstatistik %>%
+  filter(JAHR == 2023) %>%
+  select(GCD, GEM_NAME, BEV_ABSOLUT, BEV_UEBER65, AUSL_STAATSB, ALQ_15PLUS, EDU_15_TER) %>%
+  rename(
+    muni_id    = GCD,
+    municipality     = GEM_NAME,
+    population   = BEV_ABSOLUT,
+    pop_over65 = BEV_UEBER65,
+    pop_foreign = AUSL_STAATSB,
+    unemp_rate   = ALQ_15PLUS,
+    share_tertiary_edu = EDU_15_TER
+  )
+
+controls = controls %>% 
+  mutate(muni_id = as.character (muni_id)) %>% 
+  left_join(st_drop_geometry(munic24) %>% select(g_id, altitude), 
+            by = c("muni_id" = "g_id"))
 
 #Tourism Intensity/Overnight Stays
-library(readODS)
-overnights <- read_ods("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/TourismusintensitaetNachBundeslaendern1995-2025.ods")
-head(overnights)
-names(overnights)
+#library(readODS)
+#overnights <- read_ods("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/TourismusintensitaetNachBundeslaendern1995-2025.ods")
+#head(overnights)
+#names(overnights)
 
 
+#===============================================================================
+#Putting it all together
+#===============================================================================
+df_mean = df_mean %>%
+  rename(muni_id = g_id)
 
+df_max = df_max %>%
+  rename(muni_id = g_id)
+
+# Merge all together
+df_mean = df_mean %>%
+  left_join(controls, by = "muni_id") %>%
+  left_join(nwahl24, by = "muni_id")
+
+df_max = df_max %>%
+  left_join(controls, by = "muni_id") %>%
+  left_join(nwahl24, by = "muni_id")
+
+names(df_mean)
+names(df_max)
+nrow(df_max)
+nrow(df_mean)
