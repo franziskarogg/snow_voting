@@ -68,7 +68,7 @@ munic24_proj = st_transform(munic24, "EPSG: 3416")
 # Get altitude for each municipality
 altitude = get_elev_raster(munic24, z = 7, clip = "locations")
 # Extract mean altitude per municipality
-munic24$altitude <- terra::extract(rast(altitude), vect(munic24), fun = mean, na.rm = TRUE, ID = FALSE)[,1]
+munic24$altitude = terra::extract(rast(altitude), vect(munic24), fun = mean, na.rm = TRUE, ID = FALSE)[,1]
 
 
 #plot(snow24[[1]])
@@ -147,6 +147,7 @@ snow_sf_max = terra::extract(snow[[c("hist_max", "max_2324")]], vect(munic24_pro
 snow_sf_mean$anomaly = snow_sf_mean$mean_2324 - snow_sf_mean$hist_mean
 snow_sf_max$anomaly = snow_sf_max$max_2324 - snow_sf_max$hist_max
 
+load("/Users/Franzi/Desktop/snow_voting/snow_voting/create_data/snow_data.RData")
 
 ## DF --------------------------------------------------------------------------
 df_mean = st_drop_geometry(snow_sf_mean)
@@ -164,11 +165,125 @@ df_max = st_drop_geometry(snow_sf_max)
 #you can also do just one month
 #you can look for the maximum value in the winter season
 
-
+load("/Users/Franzi/Desktop/snow_voting/snow_voting/create_data/datasets.RData")
 
 #===============================================================================
 #Non-Spatial Work
 #===============================================================================
+#Adding district - ID (BEZIRKE)
+
+bezirke = tribble(
+  ~district_id, ~district_name,
+  "101", "Eisenstadt(Stadt)",
+  "102", "Rust(Stadt)",
+  "103", "Eisenstadt-Umgebung",
+  "104", "Güssing",
+  "105", "Jennersdorf",
+  "106", "Mattersburg",
+  "107", "Neusiedl am See",
+  "108", "Oberpullendorf",
+  "109", "Oberwart",
+  "201", "Klagenfurt Stadt",
+  "202", "Villach Stadt",
+  "203", "Hermagor",
+  "204", "Klagenfurt Land",
+  "205", "Sankt Veit an der Glan",
+  "206", "Spittal an der Drau",
+  "207", "Villach Land",
+  "208", "Völkermarkt",
+  "209", "Wolfsberg",
+  "210", "Feldkirchen",
+  "301", "Krems an der Donau(Stadt)",
+  "302", "Sankt Pölten(Stadt)",
+  "303", "Waidhofen an der Ybbs(Stadt)",
+  "304", "Wiener Neustadt(Stadt)",
+  "305", "Amstetten",
+  "306", "Baden",
+  "307", "Bruck an der Leitha",
+  "308", "Gänserndorf",
+  "309", "Gmünd",
+  "310", "Hollabrunn",
+  "311", "Horn",
+  "312", "Korneuburg",
+  "313", "Krems(Land)",
+  "314", "Lilienfeld",
+  "315", "Melk",
+  "316", "Mistelbach",
+  "317", "Mödling",
+  "318", "Neunkirchen",
+  "319", "Sankt Pölten(Land)",
+  "320", "Scheibbs",
+  "321", "Tulln",
+  "322", "Waidhofen an der Thaya",
+  "323", "Wiener Neustadt(Land)",
+  "325", "Zwettl",
+  "401", "Stadt Linz",
+  "402", "Stadt Steyr",
+  "403", "Stadt Wels",
+  "404", "Braunau",
+  "405", "Eferding",
+  "406", "Freistadt",
+  "407", "Gmunden",
+  "408", "Grieskirchen",
+  "409", "Kirchdorf",
+  "410", "Linz-Land",
+  "411", "Perg",
+  "412", "Ried",
+  "413", "Rohrbach",
+  "414", "Schärding",
+  "415", "Steyr-Land",
+  "416", "Urfahr-Umgebung",
+  "417", "Vöcklabruck",
+  "418", "Wels-Land",
+  "501", "Salzburg(Stadt)",
+  "502", "Hallein",
+  "503", "Salzburg-Umgebung",
+  "504", "Sankt Johann im Pongau",
+  "505", "Tamsweg",
+  "506", "Zell am See",
+  "601", "Graz(Stadt)",
+  "603", "Deutschlandsberg",
+  "606", "Graz-Umgebung",
+  "610", "Leibnitz",
+  "611", "Leoben",
+  "612", "Liezen",
+  "614", "Murau",
+  "616", "Voitsberg",
+  "617", "Weiz",
+  "620", "Murtal",
+  "621", "Bruck-Mürzzuschlag",
+  "622", "Hartberg-Fürstenfeld",
+  "623", "Südoststeiermark",
+  "701", "Innsbruck-Stadt",
+  "702", "Imst",
+  "703", "Innsbruck-Land",
+  "704", "Kitzbühel",
+  "705", "Kufstein",
+  "706", "Landeck",
+  "707", "Lienz",
+  "708", "Reutte",
+  "709", "Schwaz",
+  "801", "Bludenz",
+  "802", "Bregenz",
+  "803", "Dornbirn",
+  "804", "Feldkirch",
+  "900", "Wien"
+)
+
+#Add it to the df
+df_mean = df_mean %>%
+  rename(muni_id = g_id)
+
+df_max = df_max %>%
+  rename(muni_id = g_id)
+
+df_mean = df_mean %>%
+  mutate(district_id = substr(muni_id, 1, 3)) %>%
+  left_join(bezirke, by = "district_id")
+df_max = df_max %>% 
+  mutate(district_id = substr(muni_id, 1, 3)) %>% 
+  left_join(bezirke, by = "district_id")
+
 
 #Vote Shares per municipality - Statistik Austria
 nwahl24 = read_excel("/Users/Franzi/Desktop/snow_voting/snow_voting/input_data/endgueltiges_Ergebnis_Beschluss_Bundeswahlbehoerde_16102024.xlsx")
@@ -187,22 +302,9 @@ nwahl24 = nwahl24 %>%
   ) %>% 
   mutate(turnout = (votes_cast/eligible_voters)*100)
 
+nwahl24 = nwahl24 %>%
+  mutate(muni_id = sub("^G", "", muni_id))
 
-
-nwahl24 <- nwahl24 %>%
-  select(GKZ, Gebietsname, Wahlberechtigte, Abgegebene, 
-         FPÖ, "%...12", GRÜNE, "%...14") %>%
-  rename(
-    mun_id          = GKZ,
-    mun_name        = Gebietsname,
-    eligible_voters = Wahlberechtigte,
-    votes_cast      = Abgegebene,
-    fpoe_votes      = FPÖ,
-    fpoe_share      = "%...12",
-    gruene_votes    = GRÜNE,
-    gruene_share    = "%...14"
-  ) %>%
-  mutate(turnout = (votes_cast / eligible_voters) * 100)
 
 
 
@@ -224,6 +326,8 @@ controls = ewstatistik %>%
     share_tertiary_edu = EDU_15_TER
   )
 
+controls$pop_foreign <- as.numeric(gsub(",", ".", controls$pop_foreign))
+
 controls = controls %>% 
   mutate(muni_id = as.character (muni_id)) %>% 
   left_join(st_drop_geometry(munic24) %>% select(g_id, altitude), 
@@ -239,13 +343,10 @@ controls = controls %>%
 #===============================================================================
 #Putting it all together
 #===============================================================================
-df_mean = df_mean %>%
-  rename(muni_id = g_id)
-
-df_max = df_max %>%
-  rename(muni_id = g_id)
 
 # Merge all together
+controls = controls %>% mutate(muni_id = as.character(muni_id))
+nwahl24  = nwahl24  %>% mutate(muni_id = as.character(muni_id))
 df_mean = df_mean %>%
   left_join(controls, by = "muni_id") %>%
   left_join(nwahl24, by = "muni_id")
@@ -253,8 +354,14 @@ df_mean = df_mean %>%
 df_max = df_max %>%
   left_join(controls, by = "muni_id") %>%
   left_join(nwahl24, by = "muni_id")
+
+save(df_mean, df_max, snow_sf_max, snow_sf_mean, file = "datasets.RData")
+
+
 
 names(df_mean)
 names(df_max)
 nrow(df_max)
 nrow(df_mean)
+
+
