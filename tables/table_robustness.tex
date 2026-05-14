@@ -1,0 +1,39 @@
+\begin{table}
+\centering
+\begin{talltblr}[         %% tabularray outer open
+entry=none,label=none,
+note{}={+ p \num{< 0.1}, * p \num{< 0.05}, ** p \num{< 0.01}, *** p \num{< 0.001}},
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]Q[]Q[]},
+hline{2}={1-5}{solid, black, 0.05em},
+hline{20}={1-5}{solid, black, 0.05em},
+hline{1}={1-5}{solid, black, 0.08em},
+hline{23}={1-5}{solid, black, 0.08em},
+column{2-5}={}{halign=c},
+column{1}={}{halign=l},
+}                     %% tabularray inner close
+& OLS FPÖ & FE FPÖ & OLS Greens & FE Greens \\
+(Intercept) & \num{58.470}*** &  & \num{9.821}*** &  \\
+& (\num{4.294}) &  & (\num{1.294}) &  \\
+max\_2324 & \num{-1.511}*** & \num{-0.551} & \num{0.192}** & \num{0.033} \\
+& (\num{0.297}) & (\num{0.351}) & (\num{0.063}) & (\num{0.074}) \\
+altitude & \num{0.003}*** & \num{0.001} & \num{-0.001}*** & \num{-0.001}*** \\
+& (\num{0.001}) & (\num{0.001}) & (\num{0.000}) & (\num{0.000}) \\
+turnout & \num{-0.257}*** & \num{-0.257}*** & \num{-0.083}*** & \num{-0.038}** \\
+& (\num{0.040}) & (\num{0.045}) & (\num{0.012}) & (\num{0.014}) \\
+log\_pop & \num{1.146}*** & \num{0.479}+ & \num{0.162}** & \num{0.217}** \\
+& (\num{0.203}) & (\num{0.258}) & (\num{0.060}) & (\num{0.076}) \\
+pop\_over65 & \num{-0.203}*** & \num{-0.456}*** & \num{-0.103}*** & \num{0.030}* \\
+& (\num{0.038}) & (\num{0.054}) & (\num{0.011}) & (\num{0.013}) \\
+pop\_foreign & \num{-0.181}*** & \num{-0.131}** & \num{0.019}+ & \num{0.007} \\
+& (\num{0.031}) & (\num{0.039}) & (\num{0.011}) & (\num{0.009}) \\
+unemp\_rate & \num{-0.248}** & \num{-0.171} & \num{-0.187}*** & \num{-0.021} \\
+& (\num{0.082}) & (\num{0.107}) & (\num{0.023}) & (\num{0.026}) \\
+share\_tertiary\_edu & \num{-0.724}*** & \num{-0.662}*** & \num{0.372}*** & \num{0.397}*** \\
+& (\num{0.025}) & (\num{0.045}) & (\num{0.011}) & (\num{0.014}) \\
+Num.Obs. & \num{2115} & \num{2078} & \num{2115} & \num{2078} \\
+R2 & \num{0.352} & \num{0.596} & \num{0.620} & \num{0.767} \\
+R2 Adj. & \num{0.349} & \num{0.578} & \num{0.618} & \num{0.757} \\
+\end{talltblr}
+\end{table}
