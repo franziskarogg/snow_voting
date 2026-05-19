@@ -161,6 +161,14 @@ modelsummary(list("OLS FPÖ" = r3,
              gof_map = c("nobs", "r.squared", "adj.r.squared"),
              output = "./tables/table_robustness.tex")
 
+#Table 5 - Summary Statistics
+datasummary(fpö_share + greens_share + anomaly + mean_2324 + 
+              altitude + log_pop + pop_over65 + pop_foreign + 
+              unemp_rate + share_tertiary_edu ~ 
+              Mean + SD + Min + Max + N,
+            data = df_mean,
+            output = "./tables/summary_stats.tex")
+
 
 #-------------------------------------------------------------------------------
 #Figures 
@@ -197,22 +205,6 @@ p2 = ggplot(snow_sf_mean) +
   theme_void() + plotformat
 
 ggsave("./plots/snow_mean_map.png", plot = p2, width = 5, height = 3, dpi = 300)
-
-#Vote Shares of the National Election
-p7 = df_mean %>%
-  summarise(
-    FPÖ = mean(fpö_share, na.rm = TRUE),
-    Greens = mean(greens_share, na.rm = TRUE)
-  ) %>%
-  pivot_longer(everything(), names_to = "party", values_to = "share") %>%
-  ggplot(aes(x = party, y = share, fill = party)) +
-  geom_bar(stat = "identity", width = 0.5) +
-  scale_fill_manual(values = c("FPÖ" = "#003f7f", "Greens" = "#006d2c")) +
-  theme_minimal() +
-  labs(x = "", y = "Average Vote Share per Municipality (%)") +
-  theme(legend.position = "none",
-        plot.background = element_rect(fill = "white", color = NA))
-ggsave("./plots/vote_shares_bar.png", plot = p7, width = 4, height = 3, dpi = 300)
 
 ##Plotting vote-shares across municipalities
 munic24_votes = munic24 %>% 

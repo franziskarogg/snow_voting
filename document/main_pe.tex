@@ -1,0 +1,336 @@
+%============================================================
+% Snow and Voting in Austria
+%============================================================
+ 
+\documentclass{article}
+ 
+% ── Page layout ──────────────────────────────────────────────
+\usepackage[margin = 2.54cm]{geometry}
+ 
+% ── Encoding ─────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+ 
+% ── Tables & figures & References ─────────────────────────────────────────
+\usepackage{graphicx, dcolumn}
+\usepackage{booktabs}
+\usepackage{tabularray}
+\usepackage{float}
+\usepackage{siunitx}
+% ── Line spacing ─────────────────────────────────────────────
+\usepackage{setspace}
+\doublespacing
+\usepackage{xurl} 
+\usepackage{hanging}
+\usepackage{indentfirst}
+ 
+% ── Fonts ────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage{times}
+ 
+% ── Paragraph indent ─────────────────────────────────────────
+\setlength{\parindent}{0.5in}
+ 
+% ── Section heading formatting ───────────────────────────────
+\usepackage{titlesec}
+\titleformat{\section}[block]
+  {\normalfont\normalsize\bfseries}{{\Roman{section}.\quad}}{0em}{}
+\titleformat{\subsection}[block]
+  {\normalfont\normalsize\itshape}{}{0em}{\hspace{0.5in}}
+\titleformat{\subsubsection}[block]
+  {\normalfont\normalsize\bfseries\itshape}{}{0em}{\hspace{0.5in}}
+\titlespacing*{\section}{0pt}{12pt}{6pt}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+\titlespacing*{\subsubsection}{0pt}{10pt}{4pt}
+ 
+% ── Captions (APA 7) ─────────────────────────────────────────
+\usepackage{caption}
+\captionsetup{
+  labelfont=bf,
+  labelsep=newline,
+  justification=raggedright,
+  singlelinecheck=false,
+  font=normalsize
+}
+ 
+% ── Hyperlinks ───────────────────────────────────────────────
+\usepackage[hidelinks]{hyperref}
+ 
+% ── Math ─────────────────────────────────────────────────────
+\usepackage{amsmath}
+ 
+% ── Page numbers bottom-right ────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+ 
+%============================================================
+%  DOCUMENT
+%============================================================
+\begin{document}
+
+% ── TITLE PAGE ───────────────────────────────────────────────
+\begin{titlepage}
+  \centering
+  \vspace*{3cm}
+
+  {\large\bfseries The Politics of White Gold:\\ 
+  Snow Scarcity and Electoral Behaviour in Austrian Municipalities}
+
+  \vspace{4cm}
+
+  {\normalsize\ Franziska Rogg}\\
+  {\small Master in Social Sciences}\\
+  {\small Applied Quantitative Methods in Social Sciences II}\\
+  {\small Francisco Villamil}\\
+  {\small 28/05/2026}
+
+\end{titlepage}
+
+% ── I. INTRODUCTION ──────────────────────────────────────────
+\section{Introduction}
+Rising temperatures, longer summers, shorter winters - all these immediate consequences of anthropogenic climate change have long been projected to impact societies, livelihoods and also industries drastically. Climate reports from already 20 years ago predicted radical changes to snow reliability (OECD, 2007), seasonal patterns as well as precipitation trends have proved continuous shifts along the Northern Hemisphere (Li et al., 2025; Olefs et al., 2020) entailing drastic implications for the multi-billion industry and tradition of European winter tourism (Filho et al., 2024). Winter tourism, long a crucial economic pillar of Alpine regions, faces severe resource pressure from declining availability of natural snow in some regions, while other regions might profit in the short-term from shifting snowfall patterns and structural changes (OECD, 2007; Filho et al., 2024). Austria is a central player in the European but also worldwide tourism sector, which is reflected in the domestic relevance of tourism income, making up 6.3\% of Austria's gross domestic product in 2024 (Fritz et al., 2025). 
+Yet, beyond the direct consequences, shifts in natural snow availability throughout European winter seasons may also carry political implications, as they shape economic grievances through income losses and therefore political preferences of affected communities at the ballot box. 
+
+A growing body of literature has established various effects of climate change, natural disasters and also climate change policies on political attitudes, electoral behaviour and voter backlash (Baccini \& Leemann, 2020; Egan \& Mullin, 2012; Bernauer, 2013; Bechtel \& Hainmueller, 2011). A further strand of the literature has extensively documented how economic grievances and material insecurity fuel voter backlash and the rise of far-right parties across Western democracies. (Berman, 2021; Häusermann et al., 2020; Rodrik, 2018; Patterson, 2023). While existing literature has focused on other sources of economic grievance as well as discrete natural disasters or specific climate policy attitudes, it remains underexplored whether the gradual change in natural snow availability is already influencing electoral behaviour in general elections, especially in countries shaped by resource dependency, such as the winter tourism industry, especially in Alpine economies. 
+
+This study is positioned at the intersection of these strands in the literature, arguing that as climate change proceeds to impact snowfall patterns across the Alpine region, differing extents of the seasonal snow layer between municipalities will be reflected in local voting behaviour. As tourism-dependent municipalities, especially in lower altitude, tend to suffer from reduced snow availability, material insecurity and economic grievance will result in increasing far-right vote shares on the municipal level. Conversely, reduced snow availability may  increase the electoral salience of environmental concerns among voters immediately vulnerable to climate change, potentially driving support toward the Green Party as the major pro-climate party in the political system. These effects are expected to further differ between municipalities of higher and lower altitude as rising temperatures and precipitation patterns raise the snowline and concentrate snowfall in higher elevations (Li et al., 2025). 
+Based on the main opposing mechanisms of economic grievance or environmental salience, this study aims to explore the effect of seasonal natural snow availability on party vote shares in the 2024 Austrian elections. The following hypotheses are therefore put forward: 
+\vspace{1em}
+
+\noindent $H_1$: Municipalities with less snow depth are associated with higher vote shares of the FPÖ.
+
+\vspace{0.5em}
+\noindent $H_2$: Municipalities with less snow depth are associated with higher vote shares of the Green Party.
+
+\vspace{0.5em}
+\noindent $H_3$: Municipalities with negative deviations in snow depth from historical averages are associated with higher vote shares of the FPÖ.
+
+\vspace{0.5em}
+\noindent $H_4$: Municipalities with negative deviations in snow depth from historical averages are associated with higher vote shares of the Green Party.
+
+\vspace{0.5em}
+\noindent $H_5$: The negative association between snow depth and far-right vote shares is expected to weaken in municipalities of higher altitude.
+
+The remainder of this research note proceeds as follows: Section II and III  describe the data and empirical strategy, Section IV describes and interprets the results of the empirical analysis, followed by the Conclusion. 
+
+\vspace{2em}
+
+% ── II. DATA ──────────────────────────────────
+\section{Data}
+% Template for adding a subsection if needed:
+% \subsection{Subsection Title}
+
+To test the above-mentioned hypotheses the case of Austria will be leveraged for the following main reasons. First, the Geosphere Snowgrid dataset covers the daily snow depth of Austria in a 1 x 1 raster, providing good and reliable municipal-level data of snow-depth across the country. This study used entries ranging from 1984 to 2010 as well as the years of 2023 and 2024. Furthermore, as Figure 1 shows, the winter season of 2023/2024 followed common trends in snowfall of recent years, where snowfall patterns have produced consistently higher snowfall in the Western Alps and in higher elevation than in provinces along the Eastern Alps (Avalanche.Report, 2024; Olefs et al., 2020; Li et al., 2025). These meteorological developments result in higher levels of seasonal snow depth in western municipalities of Austria than in the Eastern Alps. This provides us with differences in the extent of snow-depth across Austrian municipalities within the same institutional and electoral but also economic context, allowing for a compared comparison of voting behaviour under varying snow conditions. Figure 2 further illustrates this development of snow depths per winter season by showing the extent of deviations from historical mean in snow depth per municipality. 
+Second, in September 2024 Austria held its National Elections, providing behavioural data on general voter attitudes across all municipalities of Austria at the same time. This allows to study the effect of snow fall on voting behaviour across municipalities and also geographic regions with varying extents of snow depth. However, explanatory power of national election results in regards of climate vulnerability remains limited, given that voters care about a variety of policies, and do not exclusively vote based on developments in snowfall. 
+Third, Austria ranks among the highest countries of Europe in terms of tourist arrivals, making the tourism industry a large generator of income, especially in the alpine provinces of the country. This allows for the assumption that especially residents of tourism-intense regions are economically dependent on certain levels of snow depth per winter season but also on persistent tourism influx in the short run and might reflect this in their voting behaviour (Fritz et al., 2025). 
+
+The main outcome variable is voting behaviour, measured as party vote shares in the national elections 2024 subsequent to the winter season 23/24 aggregated at the municipal level provided by the Austrian Ministry of the Interior (Bundesministerium für Inneres, 2024). To test the two hypothesized mechanisms, the analysis focuses on the vote shares of two electorally relevant parties in the Austrian party system, that draw on fundamentally different voter bases - the Greens predominantly relying on liberal voters with strong environmental preferences while the far-right \textit{Freiheitliche Partei Österreich} (FPÖ) draws on rural conservatives but also economically vulnerable workers (Kritzinger et al., 2013). The workforce of the tourism industry is mainly shaped by a duality of vocationally skilled, seasonal workers, such as waitstaff, ski instructors and lift operators, opposed to locally-rooted executives, landowners and hoteliers.  
+Although the FPÖ acknowledges climate change, the party presents itself skeptical of anthropogenic climate change and energy transition policies, rather campaigning for policies enhancing industrial and economic growth (Freiheitliche Partei Österreich, 2024; Ennser-Jedenastik, 2016). Figures 3 \& 4 capture the spatial distribution and density of the respective party vote shares.  
+While this approach does not allow me to isolate explicit grievances from reduced snow depth in previous winter season from broader voting behaviour, ideology, culture or other economic preferences, it provides a first approximation of the extent to which this exposure to external forces such as snowfall shapes electoral behaviour in the context of national elections. 
+
+The key independent variable, Figure 1, is the mean depth of snow in each Austrian municipality in the winter season of 2023/2024, as provided by the Geosphere Snowgrid Raster (Olefs et al., 2020). The dataset captures the daily extent of the snow layer in meters in a 1x1 km raster of Austria. To make it comparable to vote shares per municipality the snow depth has been aggregated to municipal-averages within the time period of a 'normal' winter season, lasting from November to April the following year. This time frame is based on usual operating times of tourism infrastructure, such as cable cars, but also hotels and other tourism corporations. This operationalization of snow availability seems adequate in the context of this study as the main outcome is general voting behaviour in national elections that take place in the same year but not in the direct aftermath of the winter season of interest. Therefore, it seems reasonable that individuals, aggregated at the municipal-level, draw on general perceptions of snow availability in the last winter season, reflected in a seasonal average, rather than averages of specific months or specific days with maximum snow depth. However, for robustness purposes, the model specification employing the maximum snow depth of the winter season 23/24 is included in the Appendix. 
+To further capture climate change as a shock rather than a gradual trend, I additionally employ a snow depth anomaly measure, calculated as the deviation of the 2023/24 mean snow depth from the historical long-run municipal average, such that negative values indicate below-average snow conditions, in meters, and positive values indicate above-average snow depth (Figure 2). The historical average is based on the municipal-level aggregation of mean snow depths per winter season within the time period between 1984 - 2010. 
+
+Apart from the main variables, other indicators have been collected on the municipal-level to control for various other confounding factors that vary between municipalities, such as: population size, share of the population over 65, size of the foreign population, unemployment rate, share of tertiary education and turnout in the 2024 elections (Statistik Austria, 2025). These were selected based on previous literature providing insights into factors that largely drive vote share patterns (Hooghe \& Marks, 2026; Ennser - Jedenastik, 2016). 
+Furthermore, to control for another geographical factor that could influence differences in snow depth per municipality, the altitude for each municipality is controlled for.
+Summary statistics for the main variables are included in the Appendix (Appendix A).
+
+\vspace{2em}
+
+% ── III. Methodology ────────────────────────────────
+\section{Methodology}
+
+To identify the effect of differences in snow depth between municipalities, the study aims to compare municipalities with higher depth of snow to ones with lower snow depth, approximated by specifying a cross-sectional OLS regression with district fixed effects. This model specification seems appropriate as both, the election and the winter season of interest, are within the same year, leaving no time variation to exploit. Given the context, district fixed effects are preferred over regions or states, as they provide a more thorough control, exploiting variation between municipalities within a similar economic, administrative and cultural context of the respective district. As districts are smaller and more homogeneous units than regions or states, the fixed effect absorbs effectively all unobserved time-invariant characteristics such as income levels, economic structures, location and or local voting traditions that could confound the relationship between snow conditions and voting outcomes. Snow depth as a predictor can be treated as plausibly exogenous to voting behaviour as it is mainly determined by meteorological and climatic conditions that are largely independent of direct political processes. 
+Municipal-level controls described above are included to account for characteristics that might differ between municipalities of the same district potentially influencing the relationship of interest. The effect of snow depth on vote shares is estimated the following way: 
+\vspace{1em}
+\begin{equation*}
+V_{ij} = \beta_1 \text{Snow}_{ij} + \beta_2 X_{ij} + \alpha_j + \epsilon_{ij}
+\end{equation*}
+
+\noindent where $V_{ij}$ is the vote share of the respective party in municipality $i$ in district $j$, $\text{Snow}_{ij}$ represents the snow depth coefficient, $X_{ij}$ is a vector containing the employed control variables, $\alpha_j$ accounts for district fixed effects, and $\epsilon_{ij}$ is the residual error term. 
+Therefore, the main model aims to estimate the effect of within-district variations in snow depth on party vote shares across municipalities. 
+The outcome variables, vote shares of the FPÖ and the Green Party in the national elections 2024, are estimated in separate models, as well as the two main independent variables, the mean snow depth 23/24 and its deviation from historical averages.
+To test whether the effect of snow depth on voting behaviour varies across altitude, an interaction term between mean snow depth and altitude of the municipality is additionally estimated. This spatial heterogeneity analysis allows for an assessment of whether the tested relationship differs between municipalities of high or low altitude. 
+Assessing the sensitivity of the main results, the mean snow depth is replaced by the seasonal maximum snow depth in 23/24 as an alternative operationalization of winter snow conditions. The results of this robustness check are included in Appendix B in order to verify that the results are not driven by the aggregation of seasonal snow depth per municipality. 
+The unit of analysis is the municipality, providing a sample of 2,078 observations within 79 districts. Districts consisting of only a single municipality are excluded from the analysis, as fixed effects cannot be identified without within-district variation. Standard errors are clustered at the district level to correct for correlation of the residuals. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{plots/snow_mean_map.png}
+  \caption{\textit{Mean Snow Depth Across Municipalities (2023/24)}}
+  \label{fig:mean_map}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{plots/snow_anomaly_map.png}
+  \caption{\textit{Snow Depth Anomaly Across Municipalities (2023/24)}}
+  \label{fig:anomaly_map}
+\end{figure}
+\vspace{2em}
+
+%\begin{figure}[H]
+ % \centering
+  %\includegraphics[width=0.85\textwidth]{plots/fpö_share_map.png}
+  %\caption{\textit{FPÖ Vote Share Across Municipalities}}
+  %\label{fig:fpoe_map}
+%\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{plots/boxplot_fpö_snow.png}
+  \caption{\textit{FPÖ Vote Share by Snow Depth Group}}
+  \label{fig:boxplot}
+\end{figure}
+\vspace{2em}
+
+%\begin{figure}[H]
+%  \centering
+ % \includegraphics[width=0.5\textwidth]{plots/vote_shares_bar.png}
+%  \caption{\textit{Mean Vote Shares: FPÖ and Greens}}
+ % \label{fig:barplot}
+%\end{figure}
+
+
+% ── IV. RESULTS ──────────────────────────────────────────────
+\section{Results}
+ \subsection{Identifying the effect of snow depth on party vote shares}
+ 
+As Figure 3 shows descriptively, the median far-right vote shares of municipalities within the bottom quartile of snow depth are marginally higher in comparison to the top quartile of snow depth. Furthermore, the interquartile range is narrow and comparable in both groups, suggesting only limited variation in vote shares across municipalities within this range, while outliers are present at both ends. To assess whether this pattern holds statistically, the above-described models estimate the association between snow depth and party vote shares. 
+For all model specifications, OLS regressions without district fixed effects were estimated, however, the coefficients consistently shrink upon the inclusion of fixed effects. This indicates omitted variable bias in the pooled OLS estimate and supports the fixed effects model as the preferred model for description and interpretation. Additionally, the inclusion of district fixed effects substantially improves the model fit, with R² increasing from 0.378 to 0.597, underscoring the importance of controlling for unobserved time-invariant district-level characteristics.
+
+As Table 1 shows, the coefficients on the mean seasonal snow depth are negative for vote shares of both parties. The association between average seasonal snow depth and FPÖ vote shares is moderately significant at the 5\% level, translating into a 3.25 percentage point decrease in far-right vote shares on average for each one-meter increase in snow depth within the district and holding all other factors constant. Conversely, these results show a modest increase in far-right vote shares as the average snow depth decreases. This negative association is consistent with H1, suggesting that municipalities with less natural snow availability throughout the winter season tend to show higher far-right support. This pattern seems to align with the mechanisms of snow-induced economic grievances - within districts, municipalities with less average snow depth face greater economic pressure from reduced capacities for winter tourism. A thinner snow cover implies shorter durability throughout the winter season, which is reflected in less effective snow days per winter season that allow for a sustained tourism income. Therefore, as snow depth decreases, also its capacity to form a reliable foundation for high-intensity winter tourism decreases, leaving residents and workers in a situation of economic precarity, potentially incentivizing far-right voting. 
+Even though the Austrian far-right presents itself as skeptical of anthropogenic climate change and mitigation policies, they advertise to incentivize economic growth and the protection of economically vulnerable communities from the burden of green transition costs, framing green policies as an elite-focused project that further strains workers and rural households (Freiheitliche Partei Österreich, 2024). Table 1 therefore shows modest support for H1.
+
+The effect on Green vote shares fails to reach statistical significance at conventional significance levels. While the direction of the effect is as expected, the results, however, are inconsistent with H2 due to statistical insignificance. The absence of a significant effect on Green Party vote shares might suggest that less snow availability does not yet translate into increased environmental salience and green preferences among voters, at least not at the municipal level within districts.  Furthermore, as Figure 4 shows, municipalities with higher Green vote shares are rather concentrated in more urban and less mountainous regions, potentially less vulnerable to the hypothesized effects of reduced snow covers.
+
+\vspace{2em}
+\begin{table}[H]
+  \caption{\textit{Effect of Mean Snow Depth on Vote Shares}}
+  \label{tab:mean}
+  \input{tables/table_mean.tex}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{plots/greens_share_map.png}
+  \caption{\textit{Greens Vote Share Across Municipalities}}
+  \label{fig:greens_map}
+\end{figure}
+\vspace{2em}
+
+Evaluating the shock of changes in snow depth compared to historical values per municipality, Table 2 shows that the coefficients on anomaly are negative for both party specifications. While neither of the coefficients reaches conventional statistical significance, the direction is in line with the results based on the seasonal mean snow depth, suggesting the null finding reflects limited statistical power based on the presented data rather than the absolute absence of an effect. Furthermore, the anomaly captures the deviation of the snow cover from its historical average per municipality rather than the absolute snow depth present in winter 23/24. Possibly, voters respond more to recent and absolute snow levels they experience first-hand, rather than comparing it to past levels of snow cover. Additionally, even though climate change caused continuous decline in seasonal snow availability throughout the last decades, the anomalies within the sample might still be too small in magnitude to produce a detectable effect on voting behaviour. 
+\vspace{2em}
+
+
+\begin{table}[H]
+  \caption{\textit{Effect of Snow Anomaly on Vote Shares}}
+  \label{tab:anomaly}
+  \input{tables/table_anomaly.tex}
+\end{table}
+\vspace{1em}
+
+
+\subsection{Effect heterogeneity across altitude}
+So far, the average effect of snow depth on party vote shares across municipalities, holding time-invariant characteristics and other controls constant, has been estimated. As argued above, the assumed mechanism for increased  far-right vote shares as the snow availability decreases are the economic grievances  municipalities might suffer from when the lack of snow leads to decreased profitability of winter tourism. A way to validate this assumption is to see if the suspected negative effect is less strong in areas of higher altitude, as recent literature shows a geographic concentration of snowfall in regions of higher elevation, leading to less vulnerability to snow availability in municipalities of higher altitude. Furthermore, streams of tourist arrivals might potentially shift towards higher-altitude regions to ensure snow availability, while lower-level municipalities suffer disproportionately. 
+
+In order to gauge the potential heterogeneity of this effect across altitude, Table 3 shows the coefficient on mean snow depth when holding altitude constant at zero. This coefficient itself would be nonsensical in the context of Austria, as the lowest municipalities are all above sea level. However, the interaction term allows to show the marginal effect an additional meter in altitude has on the effect of increasing snow depth on far-right vote share. As Table 3 shows both coefficients, mean snow depth as well as the interaction with altitude, are negligible and statistically insignificant. The absence of a statistically significant effect concludes that the effect of snow depth does not vary with increasing altitude, inconsistent with H5. Put into context, this implies that higher altitude municipalities have not yet profited from increased tourism influx or lower-altitude municipalities were able to balance the lack of natural snow with increased production of technical snow. 
+
+Taken together, the results present to be inconsistent with H2 - H5, while presenting modest evidence that is consistent with H1. This concludes to a modest negative relationship between the average snow depth per municipality in the winter season 23/24 and the far-right vote shares in the national elections, held in September 2024. Further insights into the spatial heterogeneity, the shock of changes in snow cover, as well as the extent to which Green Party vote shares are shaped by the levels of snow depth fail to reach statistical significance. 
+
+\vspace{2em}
+
+\begin{table}[H]
+  \caption{\textit{Heterogeneity Across Altitude: Interaction Effects}}
+  \label{tab:interaction}
+  \input{tables/table_interaction.tex}
+\end{table}
+\vspace{2em}
+
+
+% ── V. CONCLUSION ────────────────────────────────────────────
+\section{Conclusion}
+The study set out to assess the question of whether party vote shares are negatively associated with decreasing snow depth. The empirical evidence at hand shows that increased seasonal snow depth is associated with a modest decrease in far-right vote shares comparing municipalities within Austrian districts. This provides modest evidence for how potential economic grievances due to tourism-driven dependency on natural snow can further push vulnerable voter bases towards increased far-right vote shares in national elections. However, there has been no significant evidence for increased environmental salience shaping Green vote shares, nor for spatial heterogeneity across altitude. 
+
+While these results provide an empirical indication of how snow scarcity might influence electoral outcomes, the scope and design of the study impose important limitations to the conclusions that can be drawn. While the aggregation of individual voting preferences to the municipal level might mask individual grievances, other factors that might shape voting behaviour at national elections as well as the restriction to a single country and election further limit the generalizability of the results as well as the potential for causal inference. Future research should therefore aim to address these limitations, leveraging panel data and multiple election-cycles, regional elections and individual-level data, gaining further knowledge about how progressing climate change will and has already influenced political attitudes. 
+As climate change continues to shape the natural and economic landscape of Alpine economies, understanding its consequences in the economic, political, and cultural context becomes a necessity to effectively adapt and mitigate individual grievances but also for forming a supportive voter base for climate change mitigation policies. 
+\newpage
+
+% ── BIBLIOGRAPHY ─────────────────────────────────────────────
+\section*{Bibliography}
+\urlstyle{same}
+\begin{hangparas}{0.5in}{1}
+
+Avalanche.report. (2024, November 27). \textit{Seasonal review 2023/24}. \url{https://avalanche.report/blog/at-07-en/10527}
+
+Baccini, L., \& Leemann, L. (2021). Do natural disasters help the environment? How voters respond and what that means. \textit{Political Science Research and Methods}, \textit{9}(3), 468--484. \url{https://doi.org/10.1017/psrm.2020.25}
+
+Bechtel, M. M., \& Hainmueller, J. (2011). How lasting is voter gratitude? An analysis of the short- and long-term electoral returns to beneficial policy. \textit{American Journal of Political Science}, \textit{55}(4), 852--868. \url{https://doi.org/10.1111/j.1540-5907.2011.00533.x}
+
+Berman, S. (2021). The causes of populism in the West. \textit{Annual Review of Political Science}, \textit{24}, 71--88. \url{https://doi.org/10.1146/annurev-polisci-041719-102503}
+
+Bundesministerium f{\"u}r Inneres. (2024). \textit{Nationalratswahl 2024: Endg{\"u}ltiges Ergebnis}. \url{https://www.bundeswahlen.gv.at/2024/nr/}
+
+Egan, P. J., \& Mullin, M. (2012). Turning personal experience into political attitudes: The effect of local weather on Americans' perceptions about global warming. \textit{The Journal of Politics}, \textit{74}(3), 796--809. \url{https://doi.org/10.1017/S0022381612000448}
+
+Ennser-Jedenastik, L. (2016). A welfare state for whom? A group-based account of the Austrian Freedom Party's social policy profile. \textit{Swiss Political Science Review}, \textit{22}(3), 409--427. \url{https://doi.org/10.1111/spsr.12218}
+
+Freiheitliche Partei {\"O}sterreichs. (2024). \textit{Festung {\"O}sterreich -- Festung der Freiheit: Wahlprogramm f{\"u}r die Nationalratswahl 2024}. \url{https://www.fpoe.at/fileadmin/user_upload/Bund/Dokumente/NRW2024/Wahlprogramm_A4_Langversion_oS_web.pdf}
+
+Fritz, O., Burton, A., Ehn-Fragner, S., Streicher, G., Laimer, P., Daul, R., Ostertag-Sydler, J., Pfeifer, T., \& Wei{\ss}, J. (2025). \textit{J{\"a}hrlicher wissenschaftlicher Beitrag zu den Tourismusberichten 2024 bis 2027: Berichtsjahr 2024}. {\"O}sterreichisches Institut f{\"u}r Wirtschaftsforschung (WIFO). \url{https://www.wifo.ac.at/publication/pid/58055962}
+
+H{\"a}usermann, S., Kemmerling, A., \& Rueda, D. (2020). How labor market inequality transforms mass politics. \textit{Political Science Research and Methods}, \textit{8}, 344--355. \url{https://doi.org/10.1017/psrm.2018.64}
+
+Hooghe, L., \& Marks, G. (2026). How does the education cleavage stack up against the classic cleavages of the past? \textit{West European Politics}, \textit{49}(3), 636--668. \url{https://doi.org/10.1080/01402382.2025.2452789}
+
+Kritzinger, S., Zeglovits, E., Lewis-Beck, M. S., \& Nadeau, R. (2013). \textit{The Austrian voter}. V\&R Unipress.
+
+Leal Filho, W., Dinis, M. A. P., Nagy, G. J., Fracassi, U., \& Aina, Y. A. (2024). A ticket to where? Dwindling snow cover impacts the winter tourism sector as a consequence of climate change. \textit{Journal of Environmental Management}, \textit{356}, 120554. \url{https://doi.org/10.1016/j.jenvman.2024.120554}
+
+Li, Y.-P., Chen, Y.-N., Sun, F., Li, Z., Fang, G.-H., Wang, F., Zhang, X.-Q., \& Li, B.-F. (2025). Contrasting trends of extreme rainfall and snowfall in the Northern Hemisphere. \textit{Advances in Climate Change Research}, \textit{16}(6), 1101--1112. \url{https://doi.org/10.1016/j.accre.2025.09.002}
+
+OECD. (2007). \textit{Climate change in the European Alps}. OECD Publishing. \url{https://doi.org/10.1787/9789264031692-en}
+
+Patterson, J. J. (2023). Backlash to climate policy. \textit{Global Environmental Politics}, \textit{23}(1), 68--90. \url{https://doi.org/10.1162/glep_a_00684}
+
+Rodrik, D. (2018). Populism and the economics of globalization. \textit{Journal of International Business Policy}. \url{https://doi.org/10.1057/s42214-018-0001-4}
+
+\end{hangparas}
+
+\newpage
+
+% ── APPENDIX A: SUMMARY STATISTICS ───────────────────────────
+\section*{Appendix A: Summary Statistics}
+\label{app:A}
+
+\begin{table}[H]
+  \caption{\textit{Descriptive Statistics of Main Variables}}
+  \label{tab:summary}
+  \input{tables/summary_stats.tex}
+\end{table}
+
+\newpage
+
+% ── APPENDIX B: ROBUSTNESS ────────────────────────────────────
+\section*{Appendix B: Robustness}
+\label{app:B}
+
+\begin{table}[H]
+  \caption{\textit{Robustness: Maximum Snow Depth (2023/24)}}
+  \label{tab:robustness}
+  \input{tables/table_robustness.tex}
+\end{table}
+\newpage
+
+% ── APPENDIX C: Supplementary Material ────────────────────────────────────
+
+\section*{Appendix C: Supplementary Material}
+
+\noindent All raw data files as well as replication materials for the analysis can be found here: 
+
+\noindent https://github.com/franziskarogg/snow\_voting
+
+\end{document}
